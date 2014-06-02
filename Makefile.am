@@ -1,9 +1,6 @@
 SUBDIRS = src tests
 
-man/patchelfmod.1.gz:
-	gzip -9fk man/patchelfmod.1
-
-man1_MANS = man/patchelfmod.1.gz
+man1_MANS = man/patchelfmod.1
 
 doc_DATA = AUTHORS BUGS README.md
 
@@ -12,4 +9,5 @@ strip: all
 
 test: check
 
-CLEANFILES = man/patchelfmod.1.gz
+install-data-hook:
+	gzip -9f $(DESTDIR)/$(mandir)/man1/patchelfmod.1
