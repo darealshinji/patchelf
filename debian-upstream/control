@@ -1,8 +1,11 @@
 Source: patchelfmod
 Priority: extra
 Maintainer: Marshall Banana <djcj@gmx.de>
-Build-Depends: debhelper (>= 9~),
-               dh-autoreconf
+Build-Depends:
+ debhelper (>= 9~),
+ dh-autoreconf,
+ libacl1-dev,
+ libattr1-dev
 Standards-Version: 3.9.4
 Section: utils
 Homepage: https://github.com/darealshinji/patchelfmod
@@ -10,8 +13,9 @@ Vcs-Git: https://github.com/darealshinji/patchelfmod.git
 
 Package: patchelfmod
 Architecture: any
-Depends: ${shlibs:Depends},
-         ${misc:Depends}
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
 Suggests: binutils, execstack
 Description: modify properties of ELF binaries
  Simple utility for modifing existing ELF executables and libraries.
@@ -22,8 +26,9 @@ Description: modify properties of ELF binaries
 Package: patchelfmod-dbg
 Section: debug
 Architecture: any
-Depends: ${misc:Depends},
-         patchelfmod (= ${binary:Version})
+Depends:
+ ${misc:Depends},
+ patchelfmod (= ${binary:Version})
 Description: debug symbols for PatchELFmod
  Simple utility for modifing existing ELF executables and libraries.
  It can change the dynamic loader ("ELF interpreter") of executables,
