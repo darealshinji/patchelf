@@ -46,7 +46,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_bindir}/patchelfmod
 %{_mandir}/man1/patchelfmod.1*
-%doc README COPYING
+%doc README COPYING ChangeLog AUTHORS BUGS
 
 %changelog
 * Thu May 15 2014 Marshall Banana <djcj@gmx.de> - 0.13-1
