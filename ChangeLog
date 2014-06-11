@@ -1,3 +1,5 @@
+* use libattr and libacl to copy permissions if available
+
 0.13 (May 15, 2014):
 * parse arguments with getopt
 * '--replace-needed' now requires comma-separated arguments
