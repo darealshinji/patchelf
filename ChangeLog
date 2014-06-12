@@ -1,4 +1,6 @@
+* create a new DT_SONAME entry if none exists
 * use libattr and libacl to copy permissions if available
+  (contributed by Jeremy Sanders)
 
 0.13 (May 15, 2014):
 * parse arguments with getopt
