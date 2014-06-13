@@ -6,7 +6,7 @@ Summary:        modify properties of ELF binaries
 Group:          Development/Tools
 License:        GPLv3+
 URL:            https://github.com/darealshinji/patchelfmod
-Source0:        %{name}-@PACKAGE_VERSION@.tar.gz
+Source0:        https://github.com/darealshinji/patchelfmod/archive/@PACKAGE_VERSION@.tar.gz
 
 # make check does not work on these architectures: see bug #627370
 ExcludeArch:    ppc ppc64 %{sparc} %{arm}
