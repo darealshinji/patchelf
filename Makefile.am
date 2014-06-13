@@ -2,7 +2,7 @@ SUBDIRS = src tests
 
 man1_MANS = man/patchelfmod.1
 
-doc_DATA = AUTHORS BUGS README.md
+doc_DATA = README.md COPYING ChangeLog AUTHORS BUGS
 
 strip: all
 	$(STRIP) src/patchelfmod

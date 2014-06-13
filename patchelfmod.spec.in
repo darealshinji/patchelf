@@ -1,12 +1,12 @@
 Name:           patchelfmod
 Version:        @PACKAGE_VERSION@
 Release:        1%{?dist}
-Summary:        A utility for patching ELF binaries
+Summary:        modify properties of ELF binaries
 
 Group:          Development/Tools
 License:        GPLv3+
 URL:            https://github.com/darealshinji/patchelfmod
-Source0:        %{name}-@PACKAGE_VERSION@.tar.bz2
+Source0:        %{name}-@PACKAGE_VERSION@.tar.gz
 
 # make check does not work on these architectures: see bug #627370
 ExcludeArch:    ppc ppc64 %{sparc} %{arm}
@@ -18,8 +18,8 @@ BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 %description
 PatchELFmod is a simple utility for modifing existing ELF executables
 and libraries. It can change the dynamic loader ("ELF interpreter")
-of executables, change existing DT_SONAME entries of shared libraries
-and manipulate the RPATH and DT_NEEDED entries of executables and libraries.
+of executables, modify DT_SONAME entries of shared libraries and
+manipulate the RPATH and DT_NEEDED entries of executables and libraries.
 
 %prep
 %setup -q
@@ -46,9 +46,12 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_bindir}/patchelfmod
 %{_mandir}/man1/patchelfmod.1*
-%doc README COPYING ChangeLog AUTHORS BUGS
+%doc README.md COPYING ChangeLog AUTHORS BUGS
 
 %changelog
+* Thu Jun 13 2014 Marshall Banana <djcj@gmx.de> - 0.14-1
+- Update to patchelfmod-0.14
+
 * Thu May 15 2014 Marshall Banana <djcj@gmx.de> - 0.13-1
 - Update to patchelfmod-0.13
 

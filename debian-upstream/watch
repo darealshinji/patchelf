@@ -1,0 +1,2 @@
+version=3
+https://github.com/darealshinji/patchelfmod/releases archive/(.+)\.tar\.(?:xz|bz2|gz)
