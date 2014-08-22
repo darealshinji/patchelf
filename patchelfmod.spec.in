@@ -49,6 +49,9 @@ rm -rf %{buildroot}
 %doc README.md COPYING ChangeLog AUTHORS BUGS
 
 %changelog
+* Sat Aug 23 2014 Marshall Banana <djcj@gmx.de> - 0.15-1
+- Update to patchelfmod-0.15
+
 * Thu Jun 13 2014 Marshall Banana <djcj@gmx.de> - 0.14-1
 - Update to patchelfmod-0.14
 

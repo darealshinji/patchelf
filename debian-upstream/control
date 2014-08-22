@@ -2,7 +2,7 @@ Source: patchelfmod
 Priority: extra
 Maintainer: Marshall Banana <djcj@gmx.de>
 Build-Depends:
- debhelper (>= 9~),
+ debhelper (>= 9),
  dh-autoreconf,
  libacl1-dev,
  libattr1-dev
@@ -10,6 +10,7 @@ Standards-Version: 3.9.5
 Section: utils
 Homepage: https://github.com/darealshinji/patchelfmod
 Vcs-Git: https://github.com/darealshinji/patchelfmod.git
+Vcs-Browser: https://github.com/darealshinji/patchelfmod
 
 Package: patchelfmod
 Architecture: any

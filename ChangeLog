@@ -1,3 +1,7 @@
+0.15 (August 23, 2014):
+* Write directly into a file instead of creating a temporary
+  copy. This way PatchELFmod won't break any hardlinks.
+
 0.14 (June 13, 2014):
 * create a new DT_SONAME entry if none exists
 * use libattr and libacl to copy permissions if available

@@ -1,8 +1,8 @@
 AC_INIT([PatchELFmod],
-        m4_esyscmd([echo -n $(cat ./version)]),
+        m4_esyscmd([printf $(cat ./version)]),
         [https://github.com/darealshinji/patchelfmod])
 
-AM_CONFIG_HEADER(config.h)
+AM_CONFIG_HEADER([config.h])
 AC_CONFIG_SRCDIR([src/patchelfmod.cpp])
 
 AC_CONFIG_AUX_DIR([build-aux])
