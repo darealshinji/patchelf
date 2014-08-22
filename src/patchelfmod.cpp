@@ -244,12 +244,9 @@ template < ElfFileParams > void ElfFile < ElfFileParamNames >::sortShdrs()
 	wri(hdr->e_shstrndx, findSection3(shstrtabName));
 }
 
-static void writeFile(string fileName, mode_t fileMode)
+static void writeFile(string fileName)
 {
-	string fileName2 = fileName + "_patchelfmod_tmp";
-
-	int fd = open(fileName2.c_str(),
-		      O_CREAT | O_TRUNC | O_WRONLY, 0700);
+	int fd = open(fileName.c_str(), O_TRUNC | O_WRONLY, 0700);
 	if (fd == -1)
 		error("open");
 
@@ -258,21 +255,6 @@ static void writeFile(string fileName, mode_t fileMode)
 
 	if (close(fd) != 0)
 		error("close");
-
-#if defined(HAVE_ATTR_COPY_FILE)
-	if (attr_copy_file(fileName.c_str(), fileName2.c_str(), 0, 0) != 0)
-		error("attr_copy_file");
-#endif
-#if defined(HAVE_PERM_COPY_FILE)
-	if (perm_copy_file(fileName.c_str(), fileName2.c_str(), 0) != 0)
-		error("perm_copy_file");
-#else
-	if (chmod(fileName2.c_str(), fileMode) != 0)
-		error("chmod");
-#endif
-
-	if (rename(fileName2.c_str(), fileName.c_str()) != 0)
-		error("rename");
 }
 
 static void writeFileBackup(string fileName, mode_t fileMode)
@@ -1416,7 +1398,7 @@ template < class ElfFile >
 		if (saveBackup)
 			writeFileBackup(fileName, fileMode);
 		elfFile.rewriteSections();
-		writeFile(fileName, fileMode);
+		writeFile(fileName);
 	}
 }
 
