@@ -1,5 +1,5 @@
 Source: patchelfmod
-Priority: extra
+Priority: optional
 Maintainer: Marshall Banana <djcj@gmx.de>
 Build-Depends:
  debhelper (>= 9),
@@ -25,6 +25,7 @@ Description: modify properties of ELF binaries
  the RPATH and DT_NEEDED entries of executables and libraries.
 
 Package: patchelfmod-dbg
+Priority: extra
 Section: debug
 Architecture: any
 Depends:
