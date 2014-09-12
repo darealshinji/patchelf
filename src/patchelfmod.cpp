@@ -770,15 +770,13 @@ template < ElfFileParams >
 				   needed for some program */
 				if (!shdr)
 					shdr = findSection2(".rel.got");
-				if (!shdr)
-					error
-					    ("cannot find .rel.dyn or .rel.got");
+				if (!shdr) continue;
 				dyn->d_un.d_ptr = shdr->sh_addr;
-			} else if (d_tag == DT_RELA)
-				dyn->d_un.d_ptr = findSection(".rela.dyn").sh_addr;	/* PPC 
-											   Linux 
-											 */
-			else if (d_tag == DT_VERNEED)
+			} else if (d_tag == DT_RELA) {
+				Elf_Shdr *shdr = findSection2(".rela.dyn");
+				if (!shdr) continue;
+				dyn->d_un.d_ptr = shdr->sh_addr;
+			} else if (d_tag == DT_VERNEED)
 				dyn->d_un.d_ptr =
 				    findSection(".gnu.version_r").sh_addr;
 			else if (d_tag == DT_VERSYM)

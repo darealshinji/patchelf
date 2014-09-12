@@ -5,7 +5,7 @@
  *  Copyright (c) 2004-2014  Eelco Dolstra <eelco.dolstra@logicblox.com>
  *                2014       djcj <djcj@gmx.de>
  *
- *  Contributors: Zack Weinberg, rgcjonas, Jeremy Sanders
+ *  Contributors: Zack Weinberg, rgcjonas, Jeremy Sanders, Thomas Tuegel
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 "Copyright (c) 2004-2014  Eelco Dolstra <eelco.dolstra@logicblox.com>\n\
               2014       djcj <djcj@gmx.de>\n\
 \
-Contributors: Zack Weinberg, rgcjonas, Jeremy Sanders\n"
+Contributors: Zack Weinberg, rgcjonas, Jeremy Sanders, Thomas Tuegel\n"
 
 #define LICENSE "This program is free software; you may redistribute it under the terms of\n\
 the GNU General Public License version 3 or (at your option) any later version.\n\
