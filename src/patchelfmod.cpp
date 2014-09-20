@@ -622,15 +622,15 @@ template < ElfFileParams >
 
 	if ((off_t) rdi(hdr->e_shoff) < startOffset) {
 		/* The section headers occur too early in the file and would be
-		overwritten by the replaced sections. Move them to the end of the file
-		before proceeding. */
+		   overwritten by the replaced sections. Move them to the end of the file
+		   before proceeding. */
 		off_t shoffNew = fileSize;
 		off_t shSize = rdi(hdr->e_shoff) + rdi(hdr->e_shnum) * rdi(hdr->e_shentsize);
 		growFile (fileSize + shSize);
 		wri(hdr->e_shoff, shoffNew);
 
 		/* Rewrite the section header table. For neatness, keep the
-		sections sorted. */
+		   sections sorted. */
 		assert(rdi(hdr->e_shnum) == shdrs.size());
 		sortShdrs();
 		for (unsigned int i = 1; i < rdi(hdr->e_shnum); ++i)
@@ -770,7 +770,10 @@ template < ElfFileParams >
 				   needed for some program */
 				if (!shdr)
 					shdr = findSection2(".rel.got");
-				if (!shdr) continue;
+				if (!shdr) {
+					debug("cannot find .rel.dyn or .rel.got\n");
+					continue;
+				}
 				dyn->d_un.d_ptr = shdr->sh_addr;
 			} else if (d_tag == DT_RELA) {
 				Elf_Shdr *shdr = findSection2(".rela.dyn");
