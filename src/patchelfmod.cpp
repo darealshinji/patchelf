@@ -5,7 +5,8 @@
  *  Copyright (c) 2004-2014  Eelco Dolstra <eelco.dolstra@logicblox.com>
  *                2014       djcj <djcj@gmx.de>
  *
- *  Contributors: Zack Weinberg, rgcjonas, Jeremy Sanders
+ *  Contributors: Zack Weinberg, rgcjonas, Jeremy Sanders, Thomas Tuegel,
+ *                Changli Gao
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1360,6 +1361,46 @@ template < ElfFileParams >
 	changed = true;
 }
 
+template < ElfFileParams >
+    void ElfFile < ElfFileParamNames >::noDefaultLib()
+{
+	Elf_Shdr & shdrDynamic = findSection(".dynamic");
+
+	Elf_Dyn * dyn = (Elf_Dyn *) (contents + rdi(shdrDynamic.sh_offset));
+	Elf_Dyn * dynFlags1 = 0;
+	for ( ; rdi(dyn->d_tag) != DT_NULL; dyn++) {
+		if (rdi(dyn->d_tag) == DT_FLAGS_1) {
+				dynFlags1 = dyn;
+				break;
+		}
+	}
+	if (dynFlags1) {
+		if (dynFlags1->d_un.d_val & DF_1_NODEFLIB)
+				return;
+		dynFlags1->d_un.d_val |= DF_1_NODEFLIB;
+	} else {
+		string & newDynamic = replaceSection(".dynamic",
+						rdi(shdrDynamic.sh_size) + sizeof(Elf_Dyn));
+
+		unsigned int idx = 0;
+		for ( ; rdi(((Elf_Dyn *) newDynamic.c_str())[idx].d_tag)
+				 != DT_NULL; idx++) ;
+		debug("DT_NULL index is %d\n", idx);
+
+		/* Shift all entries down by one. */
+		setSubstr(newDynamic, sizeof(Elf_Dyn),
+						string(newDynamic, 0, sizeof(Elf_Dyn) * (idx + 1)));
+
+		/* Add the DT_FLAGS_1 entry at the top. */
+		Elf_Dyn newDyn;
+		wri(newDyn.d_tag, DT_FLAGS_1);
+		newDyn.d_un.d_val = DF_1_NODEFLIB;
+		setSubstr(newDynamic, 0, string((char *) &newDyn, sizeof(Elf_Dyn)));
+	}
+
+	changed = true;
+}
+
 template < class ElfFile >
     static void patchElfmod2(ElfFile & elfFile, mode_t fileMode)
 {
@@ -1405,6 +1446,8 @@ template < class ElfFile >
 		elfFile.replaceNeeded(neededLibsToReplace);
 	else if (newSoname != "")
 		elfFile.modifySoname(elfFile.replaceSoname, newSoname);
+	else if (noDefaultLib)
+		elfFile.noDefaultLib();
 
 	if (elfFile.isChanged()) {
 		if (saveBackup)
@@ -1476,6 +1519,7 @@ void usage(const string & progName)
 		"     --soname <soname>\n"
 		"  -P --print-soname\n"
 		"\n"
+		"  -0 --no-default-lib\n"
 		"  -b --backup\n"
 		"  -d --debug\n"
 		"  -F --full-debug\n"
@@ -1512,6 +1556,7 @@ static struct option long_options[] = {
 	{"soname", required_argument, 0, 'S'},
 	{"print-soname", no_argument, 0, 'P'},
 	{"print-all", no_argument, 0, 'A'},
+	{"no-default-lib", no_argument, 0, '0'},
 	{"backup", no_argument, 0, 'b'},
 	{"debug", no_argument, 0, 'd'},
 	{"full-debug", no_argument, 0, 'F'},
@@ -1544,7 +1589,7 @@ void showHelp(const string & progName)
 	       "RPATH options:\n"
 	       "\n"
 	       "  -R, --set-rpath <rpath>     Change the RPATH of an executable or library to <rpath>.\n"
-	       "                              Creates a new entry of type DT_RUNPATH if none exists."
+	       "                              Creates a new entry of type DT_RUNPATH if none exists.\n"
 	       "      --rpath <rpath>         An alias for '--set-rpath'.\n"
 	       "  -D, --delete-rpath          Remove an existing RPATH.\n"
 	       "  -s, --shrink-rpath          Remove all directories from RPATH that do not contain\n"
@@ -1584,13 +1629,18 @@ void showHelp(const string & progName)
 	       "DT_SONAME options:\n"
 	       "\n"
 	       "  -S, --set-soname <soname>   Change the DT_SONAME entry of a library to <soname>.\n"
-	       "                              Creates a new entry if none exists."
+	       "                              Creates a new entry if none exists.\n"
 	       "      --soname <soname>       An alias for '--set-soname'.\n"
 	       "  -P, --print-soname          Print the soname of a library.\n"
 	       "\n"
 	       "\n"
 	       "Other options:\n"
 	       "\n"
+				 "  -0, --no-default-lib        Marks the object that the search for dependencies of\n"
+				 "                              this object will ignore any default library search paths.\n"
+				 "                              This is done by adding a special flag to the ELF header.\n"
+				 "                              This option is only relevant to you if you're using the\n"
+         "                              nix package manager.\n"
 	       "  -b, --backup                Save a backup of the unmodified file with the\n"
 	       "                              suffix '~orig'.\n"
 	       "  -d, --debug                 Print details of the changes made to the input file.\n"
@@ -1598,7 +1648,6 @@ void showHelp(const string & progName)
 	       "                              rewriting symbols, which can be quite a lot.\n"
 	       "  -A, --print-all             Runs all print options at once. This equals '-FIptPN'.\n"
 	       "  -w, --with-gold-support     Support executables created by the Gold linker.\n"
-	       "\n"
 	       "                              These are marked as ET_DYN (not ET_EXEC) and have a\n"
 	       "                              starting virtual address of 0 so they cannot grow\n"
 	       "                              downwards. In order not to run into a Linux kernel bug,\n"
@@ -1627,7 +1676,7 @@ int main(int argc, char **argv)
 	}
 
 	int ch;
-	while ((ch = getopt_long(argc, argv, ":wbdfi:IR:Dptsca:r:n:NS:PAFhVv",
+	while ((ch = getopt_long(argc, argv, ":wbdfi:IR:Dptsca:r:n:NS:PAFhVv0",
 				 long_options, NULL)) != -1) {
 		switch (ch) {
 		case 'w':
@@ -1738,6 +1787,9 @@ int main(int argc, char **argv)
 			break;
 		case 'A':
 			printAll = true;
+			break;
+		case '0':
+			noDefaultLib = true;
 			break;
 		default:
 			fprintf(stderr, "missing or wrong argument(s)\n\n");

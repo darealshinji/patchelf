@@ -1,4 +1,4 @@
-.TH PATCHELFMOD "1" "MAY 2014" "@PACKAGE_VERSION@"
+.TH PATCHELFMOD "1" "November 2014" "@PACKAGE_VERSION@"
 .SH NAME
 PatchELFmod - modify properties of ELF binaries
 
@@ -17,6 +17,7 @@ Display usage information.
 .TP
 \fB\-V\fR, \fB\-\-version\fR
 Display program version number.
+
 .SS Dynamic loader options
 .TP
 \fB\-i\fR, \fB\-\-set\-interpreter\fR <interpreter>
@@ -28,6 +29,7 @@ An alias for '\-\-set\-interpreter'.
 .TP
 \fB\-I\fR, \fB\-\-print\-interpreter\fR
 Print the ELF interpreter of an executable.
+
 .SS RPATH options
 .TP
 \fB\-R\fR, \fB\-\-set\-rpath\fR <rpath>
@@ -66,6 +68,7 @@ By default DT_RPATH is converted to DT_RUNPATH.
 .TP
 \fB\-c\fR, \fB\-\-convert\-rpath\fR
 Convert an existing DT_RPATH to DT_RUNPATH.
+
 .SS DT_NEEDED options
 .TP
 These options can be given multiple times.
@@ -85,6 +88,7 @@ Arguments must be separated by comma.
 .TP
 \fB\-N\fR, \fB\-\-print\-needed\fR
 Prints all DT_NEEDED entries.
+
 .SS DT_SONAME options
 .TP
 \fB\-S\fR, \fB\-\-set\-soname\fR <soname>
@@ -96,7 +100,16 @@ An alias for '\-\-set\-soname'.
 .TP
 \fB\-P\fR, \fB\-\-print\-soname\fR
 Print the soname of a library.
+
 .SS Other options
+.TP
+\fB\-0\fR, \fB\-\-no\-default\-lib\fR
+Marks the object that the search for dependencies of this
+object will ignore any default library search paths.
+This is done by adding a special flag to the ELF header.
+This option is only relevant to you if you're using the
+.BR nix (1)
+package manager.
 .TP
 \fB\-b\fR, \fB\-\-backup\fR
 Save a backup of the unmodified file with the
@@ -107,7 +120,7 @@ Print details of the changes made to the input file.
 .TP
 \fB\-F\fR, \fB\-\-full\-debug\fR
 Same as '\-\-debug', but including information about
-rewriting symbols, which can be quite a lot.
+rewriting symbols, which can be quite a lot of text.
 .TP
 \fB\-A\fR, \fB\-\-print\-all\fR
 Runs all print options at once. This equals '\-FIptPN'.
@@ -138,7 +151,8 @@ This appears to be a bug in binutils.
 Copyright \(co  2004\-2014 Eelco Dolstra <eelco.dolstra@logicblox.com>
              2014      djcj <djcj@gmx.de>
 .PP
-Contributors: Zack Weinberg, vdanjean, rgcjonas, Jeremy Sanders, Thomas Tuegel
+Contributors: Zack Weinberg, vdanjean, rgcjonas, Jeremy Sanders, Thomas Tuegel,
+Changli Gao
 .PP
 This program is free software; you may redistribute it under the terms of
 the GNU General Public License version 3 or (at your option) any later version.
