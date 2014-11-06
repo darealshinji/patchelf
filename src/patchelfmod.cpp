@@ -77,7 +77,7 @@ static void debug(const char *format, ...)
 	}
 }
 
-static void error(string msg)
+__attribute__((noreturn)) static void error(string msg)
 {
 	if (errno)
 		perror(msg.c_str());
@@ -1243,7 +1243,6 @@ template < ElfFileParams > void ElfFile < ElfFileParamNames >::printNeededLibs()
 	Elf_Dyn *dyn = (Elf_Dyn *) (contents + rdi(shdrDynamic.sh_offset));
 
 	debug("DT_NEEDED entries:\n");
-	Elf_Dyn *last = dyn;
 	for (; rdi(dyn->d_tag) != DT_NULL; dyn++) {
 		if (rdi(dyn->d_tag) == DT_NEEDED) {
 			char *name = strTab + rdi(dyn->d_un.d_val);
@@ -1764,13 +1763,13 @@ int main(int argc, char **argv)
 			break;
 		case 'a':
 			split(optarg, ',', v);
-			for (int i = 0; i < v.size(); ++i)
+			for (int i = 0; i < int(v.size()); ++i)
 				if (v[i] != "")
 					neededLibsToAdd.insert(v[i]);
 			break;
 		case 'r':
 			split(optarg, ',', v);
-			for (int i = 0; i < v.size(); ++i)
+			for (int i = 0; i < int(v.size()); ++i)
 				neededLibsToRemove.insert(v[i]);
 			break;
 		case 'n':
