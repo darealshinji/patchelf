@@ -51,10 +51,7 @@ void split(const string & s, char c, vector < string > &v)
 	string::size_type i = 0;
 	string::size_type j = s.find(c);
 
-	/* check if string s even contains char c */
 	if (s.find(c) != string::npos) {
-
-		/* split the string */
 		while (j != string::npos) {
 			v.push_back(s.substr(i, j - i));
 			i = ++j;
@@ -260,11 +257,7 @@ static void writeFile(string fileName)
 
 static void writeFileBackup(string fileName, mode_t fileMode)
 {
-	/* Don't use the method in writeFile() to back up files because it will 
-	   screw up the file's integrity. */
-
 	string fileName2 = fileName + "~orig";
-
 	char buffer[1];
 
 	ifstream input(fileName.c_str(), ios::in);
