@@ -17,7 +17,9 @@ make install
 ```
 
 
-**Homepage:** https://github.com/darealshinji/patchelfmod<br>
+**Homepage:** https://github.com/darealshinji/patchelfmod
+
+**Ubuntu packages:** https://launchpad.net/~djcj/+archive/ubuntu/tools/+packages?field.name_filter=patchelfmod
 
 
 **License:**<br>
