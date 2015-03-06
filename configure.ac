@@ -23,11 +23,11 @@ AC_CHECK_HEADERS([elf.h fcntl.h getopt.h limits.h stdlib.h string.h unistd.h], [
 
 # Checks for libraries.
 AC_CHECK_HEADERS([attr/libattr.h attr/error_context.h])
-AC_SEARCH_LIBS(attr_copy_file, attr)
+AC_SEARCH_LIBS([attr_copy_file], [attr])
 AC_CHECK_FUNCS([attr_copy_file])
 
 AC_CHECK_HEADERS([sys/acl.h acl/libacl.h])
-AC_SEARCH_LIBS(perm_copy_file, acl)
+AC_SEARCH_LIBS([perm_copy_file], [acl])
 AC_CHECK_FUNCS([perm_copy_file])
 
 # Checks for typedefs, structures, and compiler characteristics.
