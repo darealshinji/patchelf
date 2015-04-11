@@ -58,7 +58,7 @@ Print the RPATH of an executable or library.
 Print the type of the RPATH, whether it's DT_RPATH
 or DT_RUNPATH.
 .TP
-\fB    \-\-rpath\-type\fR
+\fB    \-\-type\fR
 An alias for '\-\-print\-rpath\-type'.
 .TP
 \fB\-f\fR, \fB\-\-force\-rpath\fR
