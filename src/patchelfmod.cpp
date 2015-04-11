@@ -1594,7 +1594,7 @@ void showHelp(const string & progName)
 	       "  -p, --print-rpath           Print the RPATH of an executable or library.\n"
 	       "  -t, --print-rpath-type      Print the type of the RPATH, whether it's DT_RPATH\n"
 	       "                              or DT_RUNPATH.\n"
-	       "      --rpath-type            An alias for '--print-rpath-type'.\n"
+	       "      --type                  An alias for '--print-rpath-type'.\n"
 	       "  -f, --force-rpath           Force the use of the obsolete DT_RPATH instead of\n"
 	       "                              DT_RUNPATH.\n"
 	       "                              By default DT_RPATH is converted to DT_RUNPATH.\n"
