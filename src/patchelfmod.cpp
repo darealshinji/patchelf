@@ -101,7 +101,7 @@ static void readFile(string fileName, mode_t * fileMode)
 		error("stat");
 	fileSize = st.st_size;
 	*fileMode = st.st_mode;
-	maxSize = fileSize + 8 * 1024 * 1024;
+	maxSize = fileSize + 32 * 1024 * 1024;
 
 	contents = (unsigned char *)malloc(fileSize + maxSize);
 	if (!contents)
