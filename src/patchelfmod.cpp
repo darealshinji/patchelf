@@ -1385,7 +1385,7 @@ void usage(const string & progName)
 		"  -d --debug\n"
 		"  -F --full-debug\n"
 		"  -A --print-all\n"
-		"  -w --with-gold-support\n"
+		"  -w --no-pie\n"
 		"\n"
 		"  -h --help\n"
 		"  -V --version\n"
@@ -1421,7 +1421,7 @@ static struct option long_options[] = {
 	{"backup", no_argument, 0, 'b'},
 	{"debug", no_argument, 0, 'd'},
 	{"full-debug", no_argument, 0, 'F'},
-	{"with-gold-support", no_argument, 0, 'w'},
+	{"no-pie", no_argument, 0, 'w'},
 	{"help", no_argument, 0, 'h'},
 	{"version", no_argument, 0, 'V'},
 	{"version", no_argument, 0, 'v'},
@@ -1508,7 +1508,8 @@ void showHelp(const string & progName)
 	       "  -F, --full-debug            Same as '--debug', but including information about\n"
 	       "                              rewriting symbols, which can be quite a lot.\n"
 	       "  -A, --print-all             Runs all print options at once. This equals '-FIptPN'.\n"
-	       "  -w, --with-gold-support     Support executables created by the Gold linker.\n"
+	       "  -w, --no-pie                Disable support for picture independent executables (PIE)\n"
+	       "                              and executables created by the Gold linker.\n"
 	       "                              These are marked as ET_DYN (not ET_EXEC) and have a\n"
 	       "                              starting virtual address of 0 so they cannot grow\n"
 	       "                              downwards. In order not to run into a Linux kernel bug,\n"
@@ -1541,27 +1542,6 @@ int main(int argc, char **argv)
 		switch (ch) {
 		case 'w':
 			goldSupport = true;
-			/* 
-			   I don't know if this bug in the Linux kernel still
-			   appears, so I made this workaround optional. Here's
-			   some information about it from a commentary in
-			   "rewriteSectionsLibrary()":
-
-			   Even though this file is of type ET_DYN, it could
-			   actually be an executable.  For instance, Gold
-			   produces executables marked ET_DYN.  In that case we 
-			   can still hit the kernel bug that necessitated
-			   rewriteSectionsExecutable().  However, such
-			   executables also tend to start at virtual address 0, 
-			   so rewriteSectionsExecutable() won't work because it 
-			   doesn't have any virtual address space to grow
-			   downwards into.  As a workaround, make sure that the 
-			   virtual address of our new PT_LOAD segment relative
-			   to the first PT_LOAD segment is equal to its offset; 
-			   otherwise we hit the kernel bug.  This may require
-			   creating a hole in the executable.  The bigger the
-			   size of the uninitialised data segment, the bigger
-			   the hole. */
 			break;
 		case 'b':
 			saveBackup = true;
