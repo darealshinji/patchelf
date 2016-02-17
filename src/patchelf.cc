@@ -222,12 +222,11 @@ static void growFile(off_t newSize)
 }
 
 
-static void readFile(string fileName, mode_t * fileMode)
+static void readFile(string fileName)
 {
     struct stat st;
     if (stat(fileName.c_str(), &st) != 0) error("stat");
     fileSize = st.st_size;
-    *fileMode = st.st_mode;
     maxSize = fileSize + 8 * 1024 * 1024;
 
     contents = (unsigned char *) malloc(fileSize + maxSize);
@@ -358,21 +357,17 @@ void ElfFile<ElfFileParamNames>::sortShdrs()
 }
 
 
-static void writeFile(string fileName, mode_t fileMode)
+static void writeFile(string fileName)
 {
-    string fileName2 = fileName + "_patchelf_tmp";
+    int fd = open(fileName.c_str(), O_TRUNC | O_WRONLY);
+    if (fd == -1)
+        error("open");
 
-    int fd = open(fileName2.c_str(),
-        O_CREAT | O_TRUNC | O_WRONLY, 0700);
-    if (fd == -1) error("open");
+    if (write(fd, contents, fileSize) != fileSize)
+        error("write");
 
-    if (write(fd, contents, fileSize) != fileSize) error("write");
-
-    if (close(fd) != 0) error("close");
-
-    if (chmod(fileName2.c_str(), fileMode) != 0) error("chmod");
-
-    if (rename(fileName2.c_str(), fileName.c_str()) != 0) error("rename");
+    if (close(fd) != 0)
+        error("close");
 }
 
 
@@ -1100,7 +1095,7 @@ static set<string> neededLibsToRemove;
 
 
 template<class ElfFile>
-static void patchElf2(ElfFile & elfFile, mode_t fileMode)
+static void patchElf2(ElfFile & elfFile)
 {
     elfFile.parse();
 
@@ -1122,7 +1117,7 @@ static void patchElf2(ElfFile & elfFile, mode_t fileMode)
 
     if (elfFile.isChanged()){
         elfFile.rewriteSections();
-        writeFile(fileName, fileMode);
+        writeFile(fileName);
     }
 }
 
@@ -1132,9 +1127,7 @@ static void patchElf()
     if (!printInterpreter && !printRPath)
         debug("patching ELF file `%s'\n", fileName.c_str());
 
-    mode_t fileMode;
-
-    readFile(fileName, &fileMode);
+    readFile(fileName);
 
 
     /* Check the ELF header for basic validity. */
@@ -1147,13 +1140,13 @@ static void patchElf()
         contents[EI_VERSION] == EV_CURRENT)
     {
         ElfFile<Elf32_Ehdr, Elf32_Phdr, Elf32_Shdr, Elf32_Addr, Elf32_Off, Elf32_Dyn, Elf32_Sym> elfFile;
-        patchElf2(elfFile, fileMode);
+        patchElf2(elfFile);
     }
     else if (contents[EI_CLASS] == ELFCLASS64 &&
         contents[EI_VERSION] == EV_CURRENT)
     {
         ElfFile<Elf64_Ehdr, Elf64_Phdr, Elf64_Shdr, Elf64_Addr, Elf64_Off, Elf64_Dyn, Elf64_Sym> elfFile;
-        patchElf2(elfFile, fileMode);
+        patchElf2(elfFile);
     }
     else {
         error("ELF executable is not 32/64-bit, little/big-endian, version 1");
